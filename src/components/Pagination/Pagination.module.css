@@ -1,0 +1,17 @@
+.pagination{
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+}
+.pagination button{
+    padding: 8px;
+    border: none;
+    font-size: 16px;
+}
+.pagination button[disabled]{
+    background-color:#c1c1c1;
+}
+.pagination_number{
+    display: flex;
+    gap: 3px;
+}
