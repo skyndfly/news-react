@@ -1,13 +1,16 @@
 import cls from './Main.module.css';
 import NewsBanner from "../../components/NewsBanner/NewsBanner.jsx";
 import {useEffect, useState} from "react";
-import {getNews} from "../../api/apiNews.js";
+import {getCategories, getNews} from "../../api/apiNews.js";
 import NewsList from "../../components/NewsList/NewsList.jsx";
 import Skeleton from "../../components/Skeleton/Skeleton.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
+import Categories from "../../components/Categories/Categories.jsx";
 
 const Main = () => {
     const [news, setNews] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectCategory, setSelectCategory] = useState("All");
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const totalPage = 10;
@@ -15,16 +18,31 @@ const Main = () => {
     const fetchNews = async (currentPage) => {
         try {
             setIsLoading(true);
-            const response = await getNews(currentPage, pageSize);
+            const response = await getNews({
+                page_number: currentPage,
+                page_size: pageSize,
+                category: selectCategory === "All" ? null : selectCategory,
+            });
             setNews(response.news);
             setIsLoading(false);
         } catch (error) {
             console.log(error)
         }
     };
+    const fetchCategories = async () => {
+        try {
+            const response = await getCategories();
+            setCategories(["All", ...response.categories]);
+        } catch (error) {
+            console.log(error)
+        }
+    };
+    useEffect(() => {
+        fetchCategories();
+    }, [])
     useEffect(() => {
         fetchNews(currentPage);
-    }, [currentPage]);
+    }, [currentPage, selectCategory]);
 
     const handleNextPage = () => {
         if (currentPage < totalPage) {
@@ -42,6 +60,7 @@ const Main = () => {
     return (
         <main className={cls.main}>
             {news.length > 0 && !isLoading ? <NewsBanner item={news[3]}/> : <Skeleton type={'banner'} count={1}/>}
+            <Categories categories={categories} setSelected={setSelectCategory}  selected={selectCategory} />
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePrevPage={handlePrevPage}
