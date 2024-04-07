@@ -6,12 +6,14 @@ import NewsList from "../../components/NewsList/NewsList.jsx";
 import Skeleton from "../../components/Skeleton/Skeleton.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import Categories from "../../components/Categories/Categories.jsx";
+import Search from "../../components/Search/Search.jsx";
 
 const Main = () => {
     const [news, setNews] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectCategory, setSelectCategory] = useState("All");
     const [isLoading, setIsLoading] = useState(true);
+    const [keywords, setKeywords] = useState();
     const [currentPage, setCurrentPage] = useState(1);
     const totalPage = 10;
     const pageSize = 10;
@@ -22,6 +24,7 @@ const Main = () => {
                 page_number: currentPage,
                 page_size: pageSize,
                 category: selectCategory === "All" ? null : selectCategory,
+                keywords
             });
             setNews(response.news);
             setIsLoading(false);
@@ -42,7 +45,7 @@ const Main = () => {
     }, [])
     useEffect(() => {
         fetchNews(currentPage);
-    }, [currentPage, selectCategory]);
+    }, [currentPage, selectCategory, keywords]);
 
     const handleNextPage = () => {
         if (currentPage < totalPage) {
@@ -60,7 +63,8 @@ const Main = () => {
     return (
         <main className={cls.main}>
             {news.length > 0 && !isLoading ? <NewsBanner item={news[3]}/> : <Skeleton type={'banner'} count={1}/>}
-            <Categories categories={categories} setSelected={setSelectCategory}  selected={selectCategory} />
+            <Categories categories={categories} setSelected={setSelectCategory} selected={selectCategory}/>
+            <Search keywords={keywords} setKeywords={setKeywords}/>
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePrevPage={handlePrevPage}
