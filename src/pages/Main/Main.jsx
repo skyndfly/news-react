@@ -7,6 +7,7 @@ import Skeleton from "../../components/Skeleton/Skeleton.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import Categories from "../../components/Categories/Categories.jsx";
 import Search from "../../components/Search/Search.jsx";
+import {useDebounce} from "../../helpers/hooks/useDebounce.js";
 
 const Main = () => {
     const [news, setNews] = useState([]);
@@ -15,8 +16,11 @@ const Main = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [keywords, setKeywords] = useState();
     const [currentPage, setCurrentPage] = useState(1);
+
     const totalPage = 10;
     const pageSize = 10;
+
+    const debouncedKeywords = useDebounce(keywords, 1500);
     const fetchNews = async (currentPage) => {
         try {
             setIsLoading(true);
@@ -45,7 +49,7 @@ const Main = () => {
     }, [])
     useEffect(() => {
         fetchNews(currentPage);
-    }, [currentPage, selectCategory, keywords]);
+    }, [currentPage, selectCategory, debouncedKeywords]);
 
     const handleNextPage = () => {
         if (currentPage < totalPage) {
