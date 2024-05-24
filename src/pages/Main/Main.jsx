@@ -1,5 +1,4 @@
 import cls from './Main.module.css';
-import NewsBanner from "../../components/NewsBanner/NewsBanner.jsx";
 import {getCategories, getNews} from "../../api/apiNews.js";
 import NewsList from "../../components/NewsList/NewsList.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
@@ -9,6 +8,7 @@ import {useDebounce} from "../../helpers/hooks/useDebounce.js";
 import {PAGE_SIZE, TOTAL_PAGES} from "../../constants/constants.js";
 import {useFetch} from "../../helpers/hooks/useFetch.js";
 import {useFilters} from "../../helpers/hooks/useFilters.js";
+import LatestNews from "../../components/LatestNews/LatestNews.jsx";
 
 const Main = () => {
     const {filters, changeFilter} = useFilters({
@@ -22,6 +22,7 @@ const Main = () => {
         ...filters,
         keywords: debouncedKeywords
     });
+
     const {data: dataCategories} = useFetch(getCategories);
 
     const handleNextPage = () => {
@@ -39,8 +40,7 @@ const Main = () => {
     }
     return (
         <main className={cls.main}>
-            <NewsBanner isLoading={isLoading} item={data && data.news && data.news[0]}/>
-
+            <LatestNews isLoading={isLoading} banners={data && data.news} />
             {dataCategories ? (
                 <Categories
                     categories={dataCategories.categories}
