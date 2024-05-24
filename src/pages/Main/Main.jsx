@@ -1,6 +1,5 @@
 import cls from './Main.module.css';
 import NewsBanner from "../../components/NewsBanner/NewsBanner.jsx";
-import {useEffect, useState} from "react";
 import {getCategories, getNews} from "../../api/apiNews.js";
 import NewsList from "../../components/NewsList/NewsList.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
@@ -9,50 +8,52 @@ import Search from "../../components/Search/Search.jsx";
 import {useDebounce} from "../../helpers/hooks/useDebounce.js";
 import {PAGE_SIZE, TOTAL_PAGES} from "../../constants/constants.js";
 import {useFetch} from "../../helpers/hooks/useFetch.js";
+import {useFilters} from "../../helpers/hooks/useFilters.js";
 
 const Main = () => {
-    const [selectCategory, setSelectCategory] = useState("All");
-    const [keywords, setKeywords] = useState();
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const debouncedKeywords = useDebounce(keywords, 1500);
-    const {data, isLoading, error} = useFetch(getNews, {
-        page_number: currentPage,
+    const {filters, changeFilter} = useFilters({
+        page_number: 1,
         page_size: PAGE_SIZE,
-        category: selectCategory === "All" ? null : selectCategory,
+        category: null,
+        keywords: ''
+    })
+    const debouncedKeywords = useDebounce(filters.keywords, 1500);
+    const {data, isLoading, error} = useFetch(getNews, {
+        ...filters,
         keywords: debouncedKeywords
     });
     const {data: dataCategories} = useFetch(getCategories);
 
     const handleNextPage = () => {
-        if (currentPage < TOTAL_PAGES) {
-            setCurrentPage(currentPage + 1);
+        if (filters.page_number < TOTAL_PAGES) {
+            changeFilter('page_number', filters.page_number + 1);
         }
     }
     const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+        if (filters.page_number > 1) {
+            changeFilter('page_number', filters.page_number - 1);
         }
     }
     const handlePageClick = (pageNumber) => {
-        setCurrentPage(pageNumber)
+        changeFilter('page_number', pageNumber);
     }
     return (
         <main className={cls.main}>
             <NewsBanner isLoading={isLoading} item={data && data.news && data.news[0]}/>
 
-            {dataCategories ? <Categories
-                categories={dataCategories.categories}
-                setSelected={setSelectCategory}
-                selected={selectCategory}
-            /> : null}
-            <Search keywords={keywords} setKeywords={setKeywords}/>
+            {dataCategories ? (
+                <Categories
+                    categories={dataCategories.categories}
+                    selected={filters.category}
+                    setSelected={(category) => changeFilter('category', category)}
+                />) : null}
+            <Search keywords={filters.keywords} setKeywords={(keywords) => changeFilter('keywords', keywords)}/>
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePrevPage={handlePrevPage}
                 handlePageClick={handlePageClick}
                 totalPages={TOTAL_PAGES}
-                currentPage={currentPage}
+                currentPage={filters.page_number}
             />
             <NewsList isLoading={isLoading} news={data?.news}/>
             <Pagination
@@ -60,7 +61,7 @@ const Main = () => {
                 handlePrevPage={handlePrevPage}
                 handlePageClick={handlePageClick}
                 totalPages={TOTAL_PAGES}
-                currentPage={currentPage}
+                currentPage={filters.page_number}
             />
         </main>
     );
