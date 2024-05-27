@@ -12,7 +12,6 @@ export const getNews = async ({
         const response = await axios.get(`${BASE_URL}search`, {
             params: {
                 apiKey: API_KEY,
-                language: 'ru',
                 page_number,
                 page_size,
                 category,

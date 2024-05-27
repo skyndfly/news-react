@@ -5,10 +5,11 @@ import Pagination from "../../components/Pagination/Pagination.jsx";
 import Categories from "../../components/Categories/Categories.jsx";
 import Search from "../../components/Search/Search.jsx";
 import {useDebounce} from "../../helpers/hooks/useDebounce.js";
-import {PAGE_SIZE, TOTAL_PAGES} from "../../constants/constants.js";
+import {PAGE_SIZE} from "../../constants/constants.js";
 import {useFetch} from "../../helpers/hooks/useFetch.js";
 import {useFilters} from "../../helpers/hooks/useFilters.js";
 import LatestNews from "../../components/LatestNews/LatestNews.jsx";
+import NewsByFilters from "../../components/NewsByFilters/NewsByFilters.jsx";
 
 const Main = () => {
     const {filters, changeFilter} = useFilters({
@@ -23,46 +24,32 @@ const Main = () => {
         keywords: debouncedKeywords
     });
 
-    const {data: dataCategories} = useFetch(getCategories);
-
-    const handleNextPage = () => {
-        if (filters.page_number < TOTAL_PAGES) {
-            changeFilter('page_number', filters.page_number + 1);
-        }
-    }
-    const handlePrevPage = () => {
-        if (filters.page_number > 1) {
-            changeFilter('page_number', filters.page_number - 1);
-        }
-    }
-    const handlePageClick = (pageNumber) => {
-        changeFilter('page_number', pageNumber);
-    }
     return (
         <main className={cls.main}>
             <LatestNews isLoading={isLoading} banners={data && data.news} />
-            {dataCategories ? (
-                <Categories
-                    categories={dataCategories.categories}
-                    selected={filters.category}
-                    setSelected={(category) => changeFilter('category', category)}
-                />) : null}
-            <Search keywords={filters.keywords} setKeywords={(keywords) => changeFilter('keywords', keywords)}/>
-            <Pagination
-                handleNextPage={handleNextPage}
-                handlePrevPage={handlePrevPage}
-                handlePageClick={handlePageClick}
-                totalPages={TOTAL_PAGES}
-                currentPage={filters.page_number}
-            />
-            <NewsList isLoading={isLoading} news={data?.news}/>
-            <Pagination
-                handleNextPage={handleNextPage}
-                handlePrevPage={handlePrevPage}
-                handlePageClick={handlePageClick}
-                totalPages={TOTAL_PAGES}
-                currentPage={filters.page_number}
-            />
+            <NewsByFilters news={data?.news} isLoading={isLoading} filters={filters} changeFilter={changeFilter} />
+            {/*{dataCategories ? (*/}
+            {/*    <Categories*/}
+            {/*        categories={dataCategories.categories}*/}
+            {/*        selected={filters.category}*/}
+            {/*        setSelected={(category) => changeFilter('category', category)}*/}
+            {/*    />) : null}*/}
+            {/*<Search keywords={filters.keywords} setKeywords={(keywords) => changeFilter('keywords', keywords)}/>*/}
+            {/*<Pagination*/}
+            {/*    handleNextPage={handleNextPage}*/}
+            {/*    handlePrevPage={handlePrevPage}*/}
+            {/*    handlePageClick={handlePageClick}*/}
+            {/*    totalPages={TOTAL_PAGES}*/}
+            {/*    currentPage={filters.page_number}*/}
+            {/*/>*/}
+            {/*<NewsList isLoading={isLoading} news={data?.news}/>*/}
+            {/*<Pagination*/}
+            {/*    handleNextPage={handleNextPage}*/}
+            {/*    handlePrevPage={handlePrevPage}*/}
+            {/*    handlePageClick={handlePageClick}*/}
+            {/*    totalPages={TOTAL_PAGES}*/}
+            {/*    currentPage={filters.page_number}*/}
+            {/*/>*/}
         </main>
     );
 }
