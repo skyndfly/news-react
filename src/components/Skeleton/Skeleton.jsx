@@ -1,13 +1,12 @@
 import cls from './Skeleton.module.css';
 
-const Skeleton = ({count = 1, type = 'banner'}) => {
+const Skeleton = ({count = 1, type = 'banner', direction = 'column'}) => {
     return (
         <>
             {count > 1 ?
                 (
-
-                    <ul className={cls.list}>
-                        {[... Array(count)].map((_, index) => (
+                    <ul className={direction === 'column' ? cls.column_list : cls.row_list}>
+                        {[...Array(count)].map((_, index) => (
                             <li key={index} className={type === 'banner' ? cls.banner : cls.item}></li>
                         ))}
                     </ul>

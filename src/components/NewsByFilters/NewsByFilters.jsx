@@ -1,14 +1,11 @@
 import cls from './NewsByFilters.module.css';
-import Categories from "../Categories/Categories.jsx";
-import Search from "../Search/Search.jsx";
 import Pagination from "../Pagination/Pagination.jsx";
 import NewsList from "../NewsList/NewsList.jsx";
-import {useFetch} from "../../helpers/hooks/useFetch.js";
-import {getCategories} from "../../api/apiNews.js";
 import {TOTAL_PAGES} from "../../constants/constants.js";
+import NewsFilters from "../NewsFilters/NewsFilters.jsx";
 
 const NewsByFilters = ({filters, changeFilter, isLoading, news}) => {
-    const {data: dataCategories} = useFetch(getCategories);
+
     const handleNextPage = () => {
         if (filters.page_number < TOTAL_PAGES) {
             changeFilter('page_number', filters.page_number + 1);
@@ -25,13 +22,7 @@ const NewsByFilters = ({filters, changeFilter, isLoading, news}) => {
 
     return (
         <section className={cls.section}>
-            {dataCategories ? (
-                <Categories
-                    categories={dataCategories.categories}
-                    selected={filters.category}
-                    setSelected={(category) => changeFilter('category', category)}
-                />) : null}
-            <Search keywords={filters.keywords} setKeywords={(keywords) => changeFilter('keywords', keywords)}/>
+            <NewsFilters filters={filters} changeFilter={changeFilter}/>
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePrevPage={handlePrevPage}
