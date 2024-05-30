@@ -7,6 +7,7 @@
     padding: 8px;
     border: none;
     font-size: 16px;
+    cursor: pointer;
 }
 .pagination button[disabled]{
     background-color:#c1c1c1;
