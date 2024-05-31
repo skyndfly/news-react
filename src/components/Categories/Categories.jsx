@@ -1,8 +1,10 @@
 import cls from './Categories.module.css';
+import {forwardRef} from "react";
 
-const Categories = ({categories, setSelected, selected}) => {
+const Categories = forwardRef(
+    ({categories, setSelected, selected}, ref) => {
     return (
-        <div className={cls.categories}>
+        <div ref={ref} className={cls.categories}>
             <button onClick={() => setSelected(null)}
                     className={!selected ? cls.active : cls.item}>
                 All
@@ -18,5 +20,5 @@ const Categories = ({categories, setSelected, selected}) => {
             })}
         </div>
     )
-}
+});
 export default Categories;
