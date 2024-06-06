@@ -1,6 +1,6 @@
 import cls from './NewsList.module.css';
-import NewsItem from "../NewsItem/NewsItem.jsx";
-import withSkeleton from "../../helpers/hocs/withSkeleton.jsx";
+import NewsItem from "../NewsItem/NewsItem.tsx";
+import withSkeleton from "../../helpers/hocs/withSkeleton.tsx";
 
 const NewsList = ({news}) => {
     return (

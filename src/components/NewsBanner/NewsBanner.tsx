@@ -1,6 +1,6 @@
 import cls from './NewsBanner.module.css'
-import {formatTimeAgo} from "../../helpers/formatTimeAgo.js";
-import Image from "../Image/Image.jsx";
+import {formatTimeAgo} from "../../helpers/formatTimeAgo.ts";
+import Image from "../Image/Image.tsx";
 
 const NewsBanner = ({item}) => {
 
